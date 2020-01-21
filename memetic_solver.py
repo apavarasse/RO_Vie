@@ -64,7 +64,8 @@ if visualise_results or is_updated:
 
     if is_updated:
         plt.savefig("res/figures/memetic_" + file_name)
-        save_solution_as_html(best_scheduling, file_name=("memetic_" + file_name), file_path="res/visualisation_html/")
+        save_solution_as_html(best_scheduling, file_name=("memetic_" + file_name), file_path="res/visualisation_html/",
+                              show_durations=False)
         write_global_memetic_results(global_memetic_results_path, global_memetic_results)
         print("A better scheduling is found for the instance " + file_name + ":")
     if visualise_results:

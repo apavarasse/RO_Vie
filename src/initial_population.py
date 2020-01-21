@@ -207,3 +207,27 @@ def job_duration_order_asc(flow_shop, m_index):
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return str(msg) + '\n'
+
+
+# Executable part to prompt the NEH results for each instance
+if __name__ == "__main__":
+    import os
+    from src.flowshop import Flowshop
+    from src.utils import read_global_memetic_results, get_best_known_and_found_solutions
+    data_path = "../data/"
+    global_memetic_results_path = "../res/global_memetic_results.csv"
+    for dataSet in os.listdir(data_path):
+        for instance in os.listdir(data_path + dataSet):
+            flow_shop_file_path = data_path + dataSet + "/" + instance
+            flow_shop_instance = Flowshop()
+            flow_shop_instance.definir_par(flow_shop_file_path)
+            file_name = instance.split('.txt')[0]
+            global_memetic_results = read_global_memetic_results(global_memetic_results_path)
+            best_known, best_found = get_best_known_and_found_solutions(global_memetic_results, file_name)
+            neh_scheduling = Ordonnancement(flow_shop_instance.nombre_machines())
+            neh_scheduling.ordonnancer_liste_job(neh_order(flow_shop_instance))
+            neh_c_max = neh_scheduling.duree()
+            relative_gap = round(((neh_c_max - best_known) / best_known) * 100, 2)
+            print("Solving instance " + data_path + dataSet + '/' + file_name + ' with NEH... ' +
+                  str(neh_c_max) + ' ' + str(relative_gap) + '%')
+    print("Finished!")
